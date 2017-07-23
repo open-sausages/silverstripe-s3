@@ -11,19 +11,19 @@ using AWS bucket policy.
 The module requires a few environment variables to be set. Full details can
 be seen in the `SilverStripeS3AdapterTrait` trait. These are mandatory.
 
-* `SS_AWS_S3_REGION`: The AWS region your S3 bucket is hosted in (e.g. `eu-central-1`)
-* `SS_AWS_S3_BUCKET_NAME`: The name of the S3 bucket to store assets in.
+* `AWS_REGION`: The AWS region your S3 bucket is hosted in (e.g. `eu-central-1`)
+* `AWS_BUCKET_NAME`: The name of the S3 bucket to store assets in.
 
 If running outside of an EC2 instance it will be necessary to specify an API key and secret.
 
-* `SS_AWS_S3_KEY`: Your AWS access key that has access to the bucket you want to access
-* `SS_AWS_S3_SECRET`: Your AWS secret corresponding to the access key
+* `AWS_ACCESS_KEY_ID`: Your AWS access key that has access to the bucket you want to access
+* `AWS_SECRET_ACCESS_KEY`: Your AWS secret corresponding to the access key
 
 ## Installation
 
 * Define the environment variables listed above.
 * [Install Composer from https://getcomposer.org](https://getcomposer.org/download/)
-* Run `composer require madmatt/silverstripe-s3`
+* Run `composer require silverstripe/s3`
 
 This will install the most recent applicable version of the module given your other Composer
 requirements.
@@ -31,7 +31,7 @@ requirements.
 **Note:** This currently immediately replaces the built-in local asset store that comes with
 SilverStripe with one based on S3. Any files that had previously been uploaded to an existing
 asset store will be unavailable (though they won't be lost - just run `composer remove
-madmatt/silverstripe-s3` to remove the module and restore access).
+silverstripe/s3` to remove the module and restore access).
 
 ## Configuration
 
@@ -55,6 +55,8 @@ bucket policy may be useful.
 Make sure you replace `<bucket-name>` and `<your-ARN>` below with the appropriate values.
 `<your-ARN>` should match the IAM arn of the ec2 instance running your SilverStripe site.
 
+**Note:** The below policy has not been extensively tested - feedback welcome.
+
 ```
 {
     "Version": "2012-10-17",
@@ -71,7 +73,7 @@ Make sure you replace `<bucket-name>` and `<your-ARN>` below with the appropriat
             "Sid": "ServerFullAccess",
             "Effect": "Allow",
             "Principal": {"AWS":"<your-ARN>"},
-            "Action": "*",
+            "Action": ["s3:GetObject", "s3:DeleteObject", "s3:PutObject"],
             "Resource": "arn:aws:s3:::<bucket-name>/*"
         }
     ]
@@ -80,4 +82,4 @@ Make sure you replace `<bucket-name>` and `<your-ARN>` below with the appropriat
 
 ## Uninstalling
 
-* Run `composer remove madmatt/silverstripe-s3` to remove the module.
+* Run `composer remove silverstripe/s3` to remove the module.
